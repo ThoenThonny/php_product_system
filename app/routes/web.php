@@ -15,8 +15,8 @@ if (file_exists($controllerFile)) {
     if (method_exists($controller, $methodName)) {
         $controller->$methodName($param);
     } else {
-        die("Method not found");
+        die("Method $methodName not found in $controllerName");
     }
 } else {
-    die("Controller not found");
+    die("Controller $controllerName not found at $controllerFile");
 }

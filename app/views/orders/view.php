@@ -29,7 +29,6 @@
 </table>
 
 <h4>Payments</h4>
-<a href="<?= BASE_URL ?>payment/add?order=<?= $order['OrID'] ?>" class="btn btn-sm btn-success mb-2">Add Payment</a>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -37,7 +36,6 @@
             <th>Date</th>
             <th>Staff</th>
             <th>Amount</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -47,9 +45,6 @@
             <td><?= $p['PayDate'] ?></td>
             <td><?= htmlspecialchars($p['FullName']) ?></td>
             <td>$<?= number_format($p['Amount'], 2) ?></td>
-            <td>
-                <a href="<?= BASE_URL ?>payment/delete/<?= $p['PayCode'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete payment?')">Delete</a>
-            </td>
         </tr>
         <?php endforeach; ?>
     </tbody>

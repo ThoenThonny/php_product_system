@@ -78,7 +78,7 @@ class OrderController extends Controller {
             $this->orderModel->updateTotal($orderId, $total);
 
             $_SESSION['message'] = 'Order created successfully.';
-            $this->redirect('order/view/' . $orderId);
+            $this->redirect('order/view_order/' . $orderId);
         } catch (Exception $e) {
             die("Error in OrderController@store: " . $e->getMessage());
         }

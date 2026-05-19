@@ -1,10 +1,9 @@
 <?php
-require_once 'Controller.php';
-require_once '../app/models/User.php';
+require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/../models/User.php';
 
 class AuthController extends Controller {
 
-    // Display login form and handle login submission
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $userModel = new User();
@@ -18,35 +17,32 @@ class AuthController extends Controller {
                 $this->redirect('auth/login');
             }
         } else {
-            $this->view('auth/login');
+            // Hide sidebar on login page
+            $this->view('auth/login', ['hideSidebar' => true]);
         }
     }
 
-    // Logout and destroy session
     public function logout() {
         session_destroy();
         $this->redirect('auth/login');
     }
 
-    // Show registration form
     public function register() {
-        $this->view('auth/register');
+        // Hide sidebar on registration page
+        $this->view('auth/register', ['hideSidebar' => true]);
     }
 
-    // Process registration form submission
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('auth/register');
         }
 
-        // Basic validation
         $errors = [];
         if (empty($_POST['FullName'])) $errors[] = "Full name is required";
         if (empty($_POST['Username'])) $errors[] = "Username is required";
         if (empty($_POST['Password'])) $errors[] = "Password is required";
         if ($_POST['Password'] !== $_POST['ConfirmPassword']) $errors[] = "Passwords do not match";
 
-        // Check if username already exists
         $userModel = new User();
         if ($userModel->findByUsername($_POST['Username'])) {
             $errors[] = "Username already taken";
@@ -57,14 +53,13 @@ class AuthController extends Controller {
             $this->redirect('auth/register');
         }
 
-        // Prepare data for insertion
         $data = [
             'FullName' => $_POST['FullName'],
             'Gen' => $_POST['Gen'] ?? 'Other',
             'Dob' => !empty($_POST['Dob']) ? $_POST['Dob'] : null,
             'Position' => $_POST['Position'] ?? 'Staff',
             'Salary' => !empty($_POST['Salary']) ? $_POST['Salary'] : 0,
-            'Stopwork' => 0, // default active
+            'Stopwork' => 0,
             'Username' => $_POST['Username'],
             'PasswordHash' => password_hash($_POST['Password'], PASSWORD_DEFAULT)
         ];

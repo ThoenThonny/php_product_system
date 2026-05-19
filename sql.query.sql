@@ -96,3 +96,37 @@ INSERT INTO tbSuppliers (Supplier, SupAdd, SupCon, Status) VALUES
 INSERT INTO tbProducts (ProCode, ProName, Qty, UPIS, SUP, supID, ProductImage) VALUES
 ('LAP001', 'Gaming Laptop', 10, 800.00, 1200.00, 1, NULL),
 ('PHN001', 'Smartphone', 25, 400.00, 699.00, 2, NULL);
+
+-- =====================================================
+-- Tables for Import (Purchase Orders)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS tbImports (
+    ImportID INT AUTO_INCREMENT PRIMARY KEY,
+    ImportCode VARCHAR(50) NOT NULL UNIQUE,
+    ImportDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    supID INT,
+    stID INT,
+    TotalAmount DECIMAL(10,2) DEFAULT 0,
+    Notes TEXT,
+    FOREIGN KEY (supID) REFERENCES tbSuppliers(supID) ON DELETE SET NULL,
+    FOREIGN KEY (stID) REFERENCES tbStaffs(stID)
+);
+
+CREATE TABLE IF NOT EXISTS tbImportDetails (
+    ImportDetailID INT AUTO_INCREMENT PRIMARY KEY,
+    ImportID INT,
+    ProID INT,
+    Quantity INT NOT NULL,
+    CostPrice DECIMAL(10,2) NOT NULL,
+    Subtotal DECIMAL(10,2) GENERATED ALWAYS AS (Quantity * CostPrice) STORED,
+    FOREIGN KEY (ImportID) REFERENCES tbImports(ImportID) ON DELETE CASCADE,
+    FOREIGN KEY (ProID) REFERENCES tbProducts(ProID)
+);
+
+-- Add a column to track minimum stock (optional for dashboard)
+ALTER TABLE tbProducts ADD COLUMN IF NOT EXISTS MinStock INT DEFAULT 0 AFTER Qty;
+
+
+ALTER TABLE tbStaffs 
+ADD COLUMN IF NOT EXISTS Stopwork BOOLEAN DEFAULT 0,
+ADD COLUMN IF NOT EXISTS CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP;
